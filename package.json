@@ -1,0 +1,21 @@
+{
+  "name": "playwright-go-rbac-api-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright API testing scaffold for a Go/Gin RBAC multi-tenant backend connected to Next.js.",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test tests/api",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "test:trace": "playwright test --trace on",
+    "report": "playwright show-report",
+    "codegen": "playwright codegen",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.0",
+    "typescript": "^5.5.4",
+    "dotenv": "^16.4.5"
+  }
+}
