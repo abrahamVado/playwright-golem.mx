@@ -1,34 +1,66 @@
-import { APIRequestContext } from '@playwright/test';
+import { APIRequestContext, APIResponse } from '@playwright/test';
 import { routes } from '../config/routes';
 import { LoginResponse } from '../types/api';
+
+function extractAccessToken(body: any): string | undefined {
+  return (
+    body.access_token ??
+    body.accessToken ??
+    body.token ??
+    body.data?.access_token ??
+    body.data?.accessToken ??
+    body.data?.token
+  );
+}
+
+async function readJsonSafe(res: APIResponse): Promise<any> {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
 
 export class AuthClient {
   constructor(private request: APIRequestContext) {}
 
   async login(email: string, password: string) {
+    const payload = { email, password };
+
+    console.log('\n--- REQUEST PAYLOAD ---');
+    console.log(JSON.stringify(payload, null, 2));
+    console.log('------------------------\n');
+
     return this.request.post(routes.auth.login, {
-      data: { email, password },
+      data: payload,
     });
   }
 
   async loginAndGetToken(email: string, password: string): Promise<string> {
     const res = await this.login(email, password);
+    const body = (await readJsonSafe(res)) as LoginResponse | null;
 
     if (!res.ok()) {
-      throw new Error(`Login failed: ${res.status()} ${await res.text()}`);
+      throw new Error(
+        `Login failed: ${res.status()} ${JSON.stringify(body, null, 2)}`
+      );
     }
 
-    const body = (await res.json()) as LoginResponse;
+    const accessToken = extractAccessToken(body);
 
-    if (!body.access_token) {
-      throw new Error(`Login response does not include access_token: ${JSON.stringify(body)}`);
+    if (!accessToken) {
+      throw new Error(
+        `Login response does not include access token: ${JSON.stringify(body, null, 2)}`
+      );
     }
 
-    return body.access_token;
+    return accessToken;
   }
 
   async register(payload: Record<string, unknown>) {
-    return this.request.post(routes.auth.register, { data: payload });
+    return this.request.post(routes.auth.register, {
+      data: payload,
+    });
   }
 
   async refresh(refreshToken: string) {

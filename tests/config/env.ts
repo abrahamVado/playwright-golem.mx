@@ -1,5 +1,5 @@
 export const env = {
-  apiURL: process.env.API_URL || 'http://localhost:8080',
+  apiURL: process.env.API_URL || 'http://localhost:8080/api/v1',
   adminEmail: process.env.E2E_ADMIN_EMAIL || 'admin@example.com',
   adminPassword: process.env.E2E_ADMIN_PASSWORD || 'password',
   tenantAId: process.env.E2E_TENANT_A_ID || 'tenant-a',

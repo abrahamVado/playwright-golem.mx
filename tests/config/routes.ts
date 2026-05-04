@@ -1,31 +1,33 @@
+const API_PREFIX = '/api/v1';
+
 export const routes = {
-  health: '/health',
+  health: `${API_PREFIX}/health`,
 
   auth: {
-    register: '/auth/register',
-    login: '/auth/login',
-    refresh: '/auth/refresh',
-    logout: '/auth/logout',
+    register: `${API_PREFIX}/auth/register`,
+    login: `${API_PREFIX}/auth/login`,
+    refresh: `${API_PREFIX}/auth/refresh`,
+    logout: `${API_PREFIX}/auth/logout`,
   },
 
-  me: '/me',
+  me: `${API_PREFIX}/me`,
 
   admin: {
-    users: '/admin/users',
-    roles: '/admin/roles',
-    permissions: '/admin/permissions',
+    users: `${API_PREFIX}/admin/users`,
+    roles: `${API_PREFIX}/admin/roles`,
+    permissions: `${API_PREFIX}/admin/permissions`,
   },
 
   companies: {
-    users: (companyId: string) => `/companies/${companyId}/users`,
-    branches: (companyId: string) => `/companies/${companyId}/branches`,
-    settings: (companyId: string) => `/companies/${companyId}/settings`,
+    users: (companyId: string) => `${API_PREFIX}/companies/${companyId}/users`,
+    branches: (companyId: string) => `${API_PREFIX}/companies/${companyId}/branches`,
+    settings: (companyId: string) => `${API_PREFIX}/companies/${companyId}/settings`,
   },
 
   test: {
-    reset: '/test/reset',
-    seed: '/test/seed',
-    users: '/test/users',
-    tenants: '/test/tenants',
+    reset: `${API_PREFIX}/test/reset`,
+    seed: `${API_PREFIX}/test/seed`,
+    users: `${API_PREFIX}/test/users`,
+    tenants: `${API_PREFIX}/test/tenants`,
   },
 };
