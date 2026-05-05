@@ -75,3 +75,7 @@ curl http://localhost:8080
 Rebuild:
 docker compose down
 docker compose up --build
+
+
+docker compose --profile test run --rm playwright
+

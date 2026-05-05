@@ -6,7 +6,7 @@ test('frontend loads', async ({ page }) => {
 });
 
 test('api health works through nginx', async ({ request }) => {
-  const response = await request.get('/api/health');
+  const response = await request.get('/api/v1/health');
   expect(response.ok()).toBeTruthy();
 
   const body = await response.json();
