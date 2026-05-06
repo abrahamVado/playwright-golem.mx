@@ -1,47 +1,30 @@
-# Playwright API testing scaffold for Go/Gin RBAC backend
+# Playwright API tests for the current Go backend
 
-This scaffold is designed for an API-only backend that will later connect to a Next.js frontend.
+This suite targets the live contract exposed by the current Go/Gin backend.
 
 ## Goals
 
 - Test authentication flows.
-- Test protected routes.
-- Test RBAC permissions.
-- Test multi-tenant isolation.
-- Create executable backend requirements before all endpoints exist.
+- Test auth, session rotation, and logout behavior.
+- Test protected routes and standardized API envelopes.
+- Test RBAC and tenant-aware authorization boundaries.
+- Keep coverage useful even while some backend flows are still scaffolded.
 
 ## Run
 
 ```bash
-npm install
-cp .env.example .env
-npx playwright install
-npm run test:api
+npx playwright test --project=api --workers=1
 ```
 
-## Recommended backend testing mode
+## Current backend assumptions
 
-Expose test-only endpoints only in local/test environment, never in production:
+The suite currently assumes:
 
-- `POST /test/reset`
-- `POST /test/seed`
-- `POST /test/users`
-- `POST /test/tenants`
+- Responses use the standard envelope: `{ success, data?, error? }`.
+- Auth endpoints live under `/api/v1/auth/*`.
+- Protected routes use Bearer access tokens.
+- Refresh tokens are returned via `HttpOnly` cookie, not JSON.
+- Registration is still scaffolded, so valid payloads currently fail with a `BAD_REQUEST` error containing `register scaffold`.
+- Authorization-sensitive routes may legitimately return `403` if the seeded user lacks the required permission in the running backend instance.
 
-These make integration tests deterministic.
-
-## Expected API shape
-
-You can adjust routes in `tests/config/routes.ts`.
-
-Default assumptions:
-
-- `GET /health`
-- `POST /auth/login`
-- `POST /auth/register`
-- `POST /auth/refresh`
-- `POST /auth/logout`
-- `GET /me`
-- `GET /admin/users`
-- `GET /companies/:companyId/users`
-- `GET /companies/:companyId/branches`
+Adjust route expectations in `tests/config/routes.ts` if the API surface changes.

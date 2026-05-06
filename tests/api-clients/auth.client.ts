@@ -1,8 +1,8 @@
 import { APIRequestContext, APIResponse } from '@playwright/test';
 import { routes } from '../config/routes';
-import { LoginResponse } from '../types/api';
+import { ApiEnvelope, LoginPayload } from '../types/api';
 
-function extractAccessToken(body: any): string | undefined {
+export function extractAccessToken(body: any): string | undefined {
   return (
     body.access_token ??
     body.accessToken ??
@@ -38,7 +38,7 @@ export class AuthClient {
 
   async loginAndGetToken(email: string, password: string): Promise<string> {
     const res = await this.login(email, password);
-    const body = (await readJsonSafe(res)) as LoginResponse | null;
+    const body = (await readJsonSafe(res)) as ApiEnvelope<LoginPayload> | null;
 
     if (!res.ok()) {
       throw new Error(
@@ -46,7 +46,7 @@ export class AuthClient {
       );
     }
 
-    const accessToken = extractAccessToken(body);
+    const accessToken = extractAccessToken(body?.data ?? body);
 
     if (!accessToken) {
       throw new Error(
@@ -65,8 +65,14 @@ export class AuthClient {
 
   async refresh(refreshToken: string) {
     return this.request.post(routes.auth.refresh, {
-      data: { refresh_token: refreshToken },
+      headers: {
+        Cookie: `refresh_token=${refreshToken}`,
+      },
     });
+  }
+
+  async refreshWithoutCookie() {
+    return this.request.post(routes.auth.refresh);
   }
 
   async logout(accessToken: string) {

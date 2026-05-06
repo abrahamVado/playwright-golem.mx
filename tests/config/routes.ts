@@ -12,22 +12,15 @@ export const routes = {
 
   me: `${API_PREFIX}/me`,
 
-  admin: {
-    users: `${API_PREFIX}/admin/users`,
-    roles: `${API_PREFIX}/admin/roles`,
-    permissions: `${API_PREFIX}/admin/permissions`,
-  },
-
+  users: `${API_PREFIX}/users`,
+  userById: (id: string) => `${API_PREFIX}/users/${id}`,
+  roles: `${API_PREFIX}/roles`,
+  roleById: (id: string) => `${API_PREFIX}/roles/${id}`,
   companies: {
-    users: (companyId: string) => `${API_PREFIX}/companies/${companyId}/users`,
-    branches: (companyId: string) => `${API_PREFIX}/companies/${companyId}/branches`,
-    settings: (companyId: string) => `${API_PREFIX}/companies/${companyId}/settings`,
+    current: `${API_PREFIX}/companies/current`,
   },
 
-  test: {
-    reset: `${API_PREFIX}/test/reset`,
-    seed: `${API_PREFIX}/test/seed`,
-    users: `${API_PREFIX}/test/users`,
-    tenants: `${API_PREFIX}/test/tenants`,
+  invalid: {
+    route: `${API_PREFIX}/route-that-does-not-exist`,
   },
 };

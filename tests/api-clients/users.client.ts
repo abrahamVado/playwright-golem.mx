@@ -12,14 +12,52 @@ export class UsersClient extends BaseClient {
   }
 
   async listAdminUsers(token: string) {
-    return this.get(routes.admin.users, token);
+    return this.get(routes.users, token);
   }
 
-  async listCompanyUsers(companyId: string, token: string) {
-    return this.get(routes.companies.users(companyId), token);
+  async getUser(id: string, token: string) {
+    return this.get(routes.userById(id), token);
   }
 
-  async createTestUser(payload: Record<string, unknown>, token?: string) {
-    return this.post(routes.test.users, payload, token);
+  async createUser(payload: Record<string, unknown>, token: string) {
+    return this.post(routes.users, payload, token);
+  }
+
+  async updateUser(id: string, payload: Record<string, unknown>, token: string) {
+    return this.request.patch(routes.userById(id), {
+      data: payload,
+      headers: this.authHeaders(token),
+    });
+  }
+
+  async deleteUser(id: string, token: string) {
+    return this.delete(routes.userById(id), token);
+  }
+
+  async listRoles(token: string) {
+    return this.get(routes.roles, token);
+  }
+
+  async getRole(id: string, token: string) {
+    return this.get(routes.roleById(id), token);
+  }
+
+  async createRole(payload: Record<string, unknown>, token: string) {
+    return this.post(routes.roles, payload, token);
+  }
+
+  async updateRole(id: string, payload: Record<string, unknown>, token: string) {
+    return this.request.patch(routes.roleById(id), {
+      data: payload,
+      headers: this.authHeaders(token),
+    });
+  }
+
+  async deleteRole(id: string, token: string) {
+    return this.delete(routes.roleById(id), token);
+  }
+
+  async currentCompany(token: string) {
+    return this.get(routes.companies.current, token);
   }
 }

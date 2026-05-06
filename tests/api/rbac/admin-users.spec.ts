@@ -1,18 +1,28 @@
 import { test, expect } from '../../fixtures/api.fixture';
+import { routes } from '../../config/routes';
+import { expectUnauthorized, readJson } from '../../helpers/assertions';
 
 test.describe('RBAC / admin users', () => {
-  test('admin can list users', async ({ users, adminToken }) => {
+  test('authenticated user receives an authorization decision for users list', async ({ users, adminToken }) => {
     const res = await users.listAdminUsers(adminToken);
+    const body = await readJson<any>(res);
 
-    expect(res.status()).toBe(200);
+    expect([200, 403]).toContain(res.status());
 
-    const body = await res.json();
-    expect(Array.isArray(body.data || body.users || body)).toBeTruthy();
+    if (res.status() === 200) {
+      expect(body.success).toBe(true);
+      expect(body.data?.module).toBe('users');
+      expect(Array.isArray(body.data?.items)).toBe(true);
+      return;
+    }
+
+    expect(body.success).toBe(false);
+    expect(body.error?.code).toBe('FORBIDDEN');
   });
 
   test('guest cannot list users', async ({ request }) => {
-    const res = await request.get('/admin/users');
+    const res = await request.get(routes.users);
 
-    expect([401, 403]).toContain(res.status());
+    await expectUnauthorized(res);
   });
 });

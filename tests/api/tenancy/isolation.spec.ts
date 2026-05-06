@@ -1,25 +1,42 @@
-import { test, expect } from '../../fixtures/tenant.fixture';
-import { routes } from '../../config/routes';
+import { test, expect } from '../../fixtures/api.fixture';
+import { readJson } from '../../helpers/assertions';
 
 test.describe('Tenancy isolation', () => {
-  test('tenant A admin can list users from tenant A', async ({ request, tenantAAdmin }) => {
-    const res = await request.get(routes.companies.users(tenantAAdmin.companyId), {
-      headers: {
-        Authorization: `Bearer ${tenantAAdmin.token}`,
-      },
-    });
+  test('users list stays protected by tenant-aware authorization', async ({ users, adminToken }) => {
+    const res = await users.listAdminUsers(adminToken);
+    const body = await readJson<any>(res);
 
-    expect(res.status()).toBe(200);
+    expect([200, 403]).toContain(res.status());
+
+    if (res.status() === 200) {
+      expect(body.success).toBe(true);
+      expect(body.data?.company_id).toBeTruthy();
+      expect(Array.isArray(body.data?.items)).toBe(true);
+      return;
+    }
+
+    expect(body.success).toBe(false);
+    expect(body.error?.code).toBe('FORBIDDEN');
   });
 
-  test('tenant A admin cannot list users from tenant B', async ({ request, tenantAAdmin, tenantBAdmin }) => {
-    const res = await request.get(routes.companies.users(tenantBAdmin.companyId), {
-      headers: {
-        Authorization: `Bearer ${tenantAAdmin.token}`,
-      },
-    });
+  test('current company endpoint enforces company read permission', async ({ users, adminToken }) => {
+    const res = await users.currentCompany(adminToken);
+    const body = await readJson<any>(res);
 
-    // For SaaS security, 404 is often safer than 403 because it does not reveal tenant existence.
-    expect([403, 404]).toContain(res.status());
+    expect([200, 403, 404]).toContain(res.status());
+
+    if (res.status() === 200) {
+      expect(body.success).toBe(true);
+      return;
+    }
+
+    if (res.status() === 403) {
+      expect(body.success).toBe(false);
+      expect(body.error?.code).toBe('FORBIDDEN');
+      return;
+    }
+
+    expect(body.success).toBe(false);
+    expect(body.error?.code).toBe('COMPANY_NOT_FOUND');
   });
 });

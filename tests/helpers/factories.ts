@@ -2,10 +2,10 @@ import { randomEmail, randomName } from './random';
 
 export function makeRegisterPayload(overrides: Partial<Record<string, unknown>> = {}) {
   return {
+    company_name: 'Acme Test Company',
     name: randomName(),
     email: randomEmail(),
     password: 'Password123!Strong',
-    password_confirmation: 'Password123!Strong',
     ...overrides,
   };
 }

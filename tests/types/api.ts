@@ -8,7 +8,16 @@ export type ApiUser = {
   permissions?: string[];
 };
 
-export type LoginResponse = {
+export type ApiEnvelope<T> = {
+  success: boolean;
+  data?: T;
+  error?: {
+    code?: string;
+    message?: string;
+  };
+};
+
+export type LoginPayload = {
   access_token: string;
   refresh_token?: string;
   token_type?: string;

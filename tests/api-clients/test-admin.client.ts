@@ -1,28 +1,24 @@
 import { APIRequestContext } from '@playwright/test';
-import { routes } from '../config/routes';
 
 export class TestAdminClient {
   constructor(private request: APIRequestContext) {}
 
   async reset() {
-    return this.request.post(routes.test.reset);
+    throw new Error('Test admin endpoints are not implemented in the current Go backend');
   }
 
   async seed(payload?: Record<string, unknown>) {
-    return this.request.post(routes.test.seed, {
-      data: payload || {},
-    });
+    void payload;
+    throw new Error('Test admin endpoints are not implemented in the current Go backend');
   }
 
   async createTenant(payload: Record<string, unknown>) {
-    return this.request.post(routes.test.tenants, {
-      data: payload,
-    });
+    void payload;
+    throw new Error('Test admin endpoints are not implemented in the current Go backend');
   }
 
   async createUser(payload: Record<string, unknown>) {
-    return this.request.post(routes.test.users, {
-      data: payload,
-    });
+    void payload;
+    throw new Error('Test admin endpoints are not implemented in the current Go backend');
   }
 }
