@@ -29,6 +29,13 @@ export class BaseClient {
     });
   }
 
+  async patch(path: string, data?: unknown, token?: string): Promise<APIResponse> {
+    return this.request.patch(path, {
+      data,
+      headers: token ? this.authHeaders(token) : undefined,
+    });
+  }
+
   async delete(path: string, token?: string): Promise<APIResponse> {
     return this.request.delete(path, {
       headers: token ? this.authHeaders(token) : undefined,

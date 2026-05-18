@@ -2,6 +2,8 @@ import { APIRequestContext, APIResponse } from '@playwright/test';
 import { routes } from '../config/routes';
 import { ApiEnvelope, LoginPayload } from '../types/api';
 
+const DEBUG_API_REQUESTS = !!process.env.DEBUG_API_REQUESTS;
+
 export function extractAccessToken(body: any): string | undefined {
   return (
     body.access_token ??
@@ -27,9 +29,11 @@ export class AuthClient {
   async login(email: string, password: string) {
     const payload = { email, password };
 
-    console.log('\n--- REQUEST PAYLOAD ---');
-    console.log(JSON.stringify(payload, null, 2));
-    console.log('------------------------\n');
+    if (DEBUG_API_REQUESTS) {
+      console.log('\n--- REQUEST PAYLOAD ---');
+      console.log(JSON.stringify(payload, null, 2));
+      console.log('------------------------\n');
+    }
 
     return this.request.post(routes.auth.login, {
       data: payload,
