@@ -24,6 +24,9 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 2,
   retries: process.env.CI ? 1 : 0,
 
+  globalSetup: require.resolve('./tests/global-setup'),
+  globalTeardown: require.resolve('./tests/global-teardown'),
+
   reporter: [
     ['html', { outputFolder: 'playwright-report' }],
     ['list'],
@@ -46,7 +49,23 @@ export default defineConfig({
     },
     {
       name: 'frontend',
-      testMatch: /tests\/(?!api\/).*\.spec\.ts/,
+      testMatch: /tests\/(?!api\/)(?!frontend-real\/)(?!live-deploy).*\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: FRONTEND_BASE_URL,
+      },
+    },
+    {
+      name: 'frontend-real',
+      testMatch: /tests\/frontend-real\/.*\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: FRONTEND_BASE_URL,
+      },
+    },
+    {
+      name: 'live',
+      testMatch: /tests\/live-deploy\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         baseURL: FRONTEND_BASE_URL,
