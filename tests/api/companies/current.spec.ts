@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/api.fixture';
 import { routes } from '../../config/routes';
 import { expectSuccess, expectUnauthorized, readJson } from '../../helpers/assertions';
 
-test.describe('Companies / current', () => {
+test.describe('Companies / current', { tag: ['@api', '@companies'] }, () => {
   test('authenticated user can read current tenant', async ({ users, adminToken }) => {
     const res = await users.currentCompany(adminToken);
     const body = await expectSuccess<{ id: string; name: string; slug: string; status: string }>(res, 200);

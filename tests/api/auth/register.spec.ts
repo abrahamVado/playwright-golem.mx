@@ -1,12 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { ApiFixture } from '../../fixtures/api.fixture';
+import { test, expect } from '../../fixtures/api.fixture';
 import { makeRegisterPayload } from '../../helpers/factories';
-import { expectSuccess } from '../../helpers/assertions';
-import { assertError } from '../../helpers/assertions';
+import { expectSuccess, expectError } from '../../helpers/assertions';
 
 const companyPrefix = process.env.E2E_REGISTER_COMPANY_PREFIX || 'Paladin Live Test Company';
 
-test.describe('Auth / register', () => {
+test.describe('Auth / register', { tag: ['@api', '@auth'] }, () => {
   test('registers a new company owner with valid payload', async ({ auth }) => {
     const payload = makeRegisterPayload({
       company_name: `${companyPrefix} ${Date.now()}`,
@@ -18,16 +16,18 @@ test.describe('Auth / register', () => {
     expect(body.data?.message).toBe('registered');
   });
 
-  test.each([
-    ['not-an-email', 'BAD_REQUEST'],
-    ['missing@domain.com', 'BAD_REQUEST'],
-    ['invalid@domain', 'BAD_REQUEST'],
-  ])('rejects invalid email: %s', async ({ auth }: { auth: ApiFixture }, [emailValue, errorCode]: [string, string]) => {
-    const payload = makeRegisterPayload({ email: emailValue });
+  test('rejects invalid emails', async ({ auth }) => {
+    const cases = [
+      ['not-an-email', 'BAD_REQUEST'],
+      ['missing@domain.com', 'BAD_REQUEST'],
+      ['invalid@domain', 'BAD_REQUEST'],
+    ] as const;
 
-    const res = await auth.register(payload);
-
-    await assertError(res, 400, errorCode);
+    for (const [emailValue, errorCode] of cases) {
+      const payload = makeRegisterPayload({ email: emailValue });
+      const res = await auth.register(payload);
+      await expectError(res, 400, errorCode);
+    }
   });
 
   test('rejects weak password', async ({ auth }) => {
