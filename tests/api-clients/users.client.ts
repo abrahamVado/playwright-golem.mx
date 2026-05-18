@@ -24,10 +24,7 @@ export class UsersClient extends BaseClient {
   }
 
   async updateUser(id: string, payload: Record<string, unknown>, token: string) {
-    return this.request.patch(routes.userById(id), {
-      data: payload,
-      headers: this.authHeaders(token),
-    });
+    return this.patch(routes.userById(id), payload, token);
   }
 
   async deleteUser(id: string, token: string) {
@@ -47,10 +44,7 @@ export class UsersClient extends BaseClient {
   }
 
   async updateRole(id: string, payload: Record<string, unknown>, token: string) {
-    return this.request.patch(routes.roleById(id), {
-      data: payload,
-      headers: this.authHeaders(token),
-    });
+    return this.patch(routes.roleById(id), payload, token);
   }
 
   async deleteRole(id: string, token: string) {
@@ -59,5 +53,9 @@ export class UsersClient extends BaseClient {
 
   async currentCompany(token: string) {
     return this.get(routes.companies.current, token);
+  }
+
+  async updateCurrentCompany(payload: Record<string, unknown>, token: string) {
+    return this.patch(routes.companies.current, payload, token);
   }
 }
