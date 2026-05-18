@@ -2,7 +2,7 @@ import { test, expect } from '../../fixtures/api.fixture';
 import { routes } from '../../config/routes';
 import { readJson } from '../../helpers/assertions';
 
-test.describe('Auth header validation', () => {
+test.describe('Auth header validation', { tag: ['@api', '@auth', '@security'] }, () => {
   test('rejects missing bearer token value', async ({ request }) => {
     const res = await request.get(routes.me, {
       headers: {

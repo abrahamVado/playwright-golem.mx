@@ -39,7 +39,7 @@ ${typeof body === 'string' ? body : JSON.stringify(body, null, 2)}
   return body;
 }
 
-test.describe('Auth / login', () => {
+test.describe('Auth / login', { tag: ['@api', '@auth', '@smoke'] }, () => {
   test('valid admin can login and receive access token', async ({ auth }) => {
     const payload = {
       email: env.adminEmail,

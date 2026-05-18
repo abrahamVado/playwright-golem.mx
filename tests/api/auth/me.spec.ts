@@ -1,9 +1,8 @@
 import { test, expect } from '../../fixtures/api.fixture';
 import { routes } from '../../config/routes';
-import { expectSuccess } from '../../helpers/assertions';
-import { assertUnauthorized } from '../../helpers/assertions/index.ts';
+import { expectSuccess, expectUnauthorized } from '../../helpers/assertions';
 
-test.describe('Auth / me', () => {
+test.describe('Auth / me', { tag: ['@api', '@auth'] }, () => {
   test('authenticated user can read profile', async ({ users, adminToken }) => {
     const res = await users.me(adminToken);
     const body = await expectSuccess<{
@@ -19,6 +18,6 @@ test.describe('Auth / me', () => {
   test('guest cannot read profile', async ({ request }) => {
     const res = await request.get(routes.me);
 
-    await assertUnauthorized(res);
+    await expectUnauthorized(res);
   });
 });
