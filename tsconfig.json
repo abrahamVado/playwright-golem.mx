@@ -3,12 +3,12 @@
     "target": "ES2022",
     "lib": ["ES2022", "DOM"],
     "module": "CommonJS",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "types": ["node", "@playwright/test"],
+    "types": ["@playwright/test", "./helpers/assertions/assertError", "./helpers/assertions/assertUnauthorized", "node"],
     "skipLibCheck": true
   },
-  "include": ["tests/**/*.ts", "playwright.config.ts"]
+  "include": ["tests/**/*.ts", "helpers/**/*", "playwright.config.ts"]
 }
